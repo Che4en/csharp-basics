@@ -6,7 +6,7 @@ PrintEvenNumbers();
 Console.WriteLine(SumNumbers(numbers));
 Console.WriteLine(CountGreater(numbers, 4));
 Console.WriteLine(ReverseString("abc"));
-
+Console.WriteLine(Min(numbers));
 int Max(int[] values)
 {
     var max = values[0];
@@ -78,4 +78,18 @@ string ReverseString(string s)
     }
 
     return result;
-}   
+}
+
+int Min(int[] numbers)
+{
+    var min = numbers[0];
+
+    for (var i = 0; i < numbers.Length; i++)
+    {
+        if (min > numbers[i])
+        {
+            min = numbers[i];
+        }
+    }
+    return min;
+}
