@@ -8,6 +8,7 @@ Console.WriteLine(CountGreater(numbers, 4));
 Console.WriteLine(ReverseString("abc"));
 Console.WriteLine(Min(numbers));
 Console.WriteLine(Average(numbers));
+Console.WriteLine(CountVowels("hEllo"));
 int Max(int[] values)
 {
     var max = values[0];
@@ -97,15 +98,12 @@ int Min(int[] values)
 
 double Average(int[] values)
 {
-    var average = 0.0;
-    var count = 0.0;
     var sum = 0;
     for (var i = 0; i < values.Length; i++)
     {
-        count += 1;
-        sum +=  values[i];
-        average = sum/count;
+        sum += values[i];
     }
+    var average = (double)sum/values.Length;
     return average;
 }
 
@@ -121,7 +119,5 @@ int CountVowels(string s)
             
         }
     }
-
     return count;
 }
-Console.WriteLine(CountVowels("hEllo"));
