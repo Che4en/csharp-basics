@@ -80,16 +80,32 @@ string ReverseString(string s)
     return result;
 }
 
-int Min(int[] numbers)
+int Min(int[] values)
 {
-    var min = numbers[0];
+    var min = values[0];
 
-    for (var i = 0; i < numbers.Length; i++)
+    for (var i = 0; i < values.Length; i++)
     {
-        if (min > numbers[i])
+        if (min > values[i])
         {
-            min = numbers[i];
+            min = values[i];
         }
     }
     return min;
 }
+
+double Average(int[] values)
+{
+    var average = 0.0;
+    var count = 0.0;
+    var sum = 0;
+    for (var i = 0; i < values.Length; i++)
+    {
+        count += 1;
+        sum +=  values[i];
+        average = sum/count;
+    }
+    return average;
+}
+
+Console.WriteLine(Average(numbers));
