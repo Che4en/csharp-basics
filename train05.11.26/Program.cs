@@ -1,73 +1,61 @@
-﻿void FizzBuzz()
-{
-    for (int i = 1; i <= 30; i++)
-    {
-        if (i % 3 == 0 && i % 5 == 0)
-        {
-            Console.WriteLine("FizzBuzz");
-        }
-        else if (i % 3 == 0)
-        {
-            Console.WriteLine("Fizz");
-        }
-        else if (i%5 == 0)
-        {
-            Console.WriteLine("Buzz");
-        }
-        else
-        {
-            Console.WriteLine(i);
-        }
-    }
-}
-FizzBuzz();
+﻿BankAccount gena = new BankAccount("Geo");
+BankAccount sena = new BankAccount("senna");
+gena.Deposit(50);
+sena.Deposit(100);
 
-string ReverseString(string s)
+Console.WriteLine(gena.Transfer(sena, 30));   // True
+Console.WriteLine(gena.Balance);              // 20
+Console.WriteLine(sena.Balance);              // 130
+Console.WriteLine(gena.Transfer(sena, 100));  // False
+Console.WriteLine(gena.Balance);              // 20, не изменился
+Console.WriteLine(sena.Balance);              // 130, не изменился
+
+
+class BankAccount
 {
-    var result = "";
-    for (var i = s.Length-1; i>=0; i--)
+    public string Owner { get; private set; }
+    public decimal Balance { get; private set; }
+
+    public BankAccount(string owner)
     {
-        result+=s[i];
+        if (string.IsNullOrWhiteSpace(owner))
+        {
+            throw new  ArgumentException(nameof(owner));
+        }
+        Owner = owner;
     }
 
-    return result;
-}
-
-bool IsPalindrome(string s)
-{
-    var lower = s.ToLower();
-    var reversed = ReverseString(lower);
-    return reversed == lower;
-}
-Console.WriteLine(IsPalindrome("Level"));
-Console.WriteLine(IsPalindrome(""));
-Console.WriteLine(IsPalindrome("l"));
-
-
-int CountChar(string s, char target)
-{
-    var count = 0;
-    foreach (var c in s)
+    public void Deposit(decimal amount)
     {
-        if (c == target) count += 1;
-    }
-    return count;
-}
-Console.WriteLine(CountChar("level" ,'e'));
-
-int FindIndex(int[] a, int t)
-{
-    for (int i = 0; i<a.Length; i++)
-    {
-        if (a[i] == t)
+        if (amount <= 0)
         {
-            return i;
+            throw new ArgumentException(nameof(amount));
         }
+        Balance += amount;
     }
 
-    return -1;
+    public bool Withdraw(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            throw new ArgumentException(nameof(amount));
+        }
+        else if (Balance < amount)
+        {
+            return false;
+        }
+        Balance -= amount;
+        return true;
+    }
+
+    public bool Transfer(BankAccount target, decimal amount)
+    {
+        var success = Withdraw(amount);
+        if (!success)
+        {
+            return false;
+        }
+        target.Deposit(amount);
+        return true;
+    }
 }
-Console.WriteLine(FindIndex([4, 8, 15, 8], 8));
-Console.WriteLine(FindIndex([4, 8, 15, 8], 4));
-Console.WriteLine(FindIndex([4, 8, 15, 8], 99));
-Console.WriteLine(FindIndex([], 2));
