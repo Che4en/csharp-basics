@@ -1,46 +1,93 @@
-﻿var first = new Rectangle(3,3);
-var second = new Rectangle(2,5);
+﻿var sword = new Weapon("Sword", 30);
+var dagger = new Weapon("Dagger", 10);
 
-Console.WriteLine(first.GetArea());
-Console.WriteLine(second.GetArea());
-Console.WriteLine(first.GetPerimeter());
-Console.WriteLine(second.GetPerimeter());
-Console.WriteLine(first.IsSquare());
-Console.WriteLine(second.IsSquare());
-first.Scale(2);
-Console.WriteLine(first.GetArea());
-Console.WriteLine(first.IsBiggerThan(second));
+var first = new Player("anna", 100, sword);
+var second = new Player("boris", 100, dagger);
 
-class Rectangle(int width, int height)
+first.Attack(second);
+Console.WriteLine(second.Health);   
+
+first.Equip(dagger);
+first.Attack(second);
+Console.WriteLine(second.Health);
+
+Console.WriteLine(first.IsAlive()); 
+first.TakeDamage(10);
+Console.WriteLine(first.Health);   
+
+// first.Attack(second);
+// Console.WriteLine(second.Health);   
+// first.Attack(second);
+// Console.WriteLine(second.Health);   
+// Console.WriteLine(second.IsAlive());
+// Console.WriteLine(second.Attack(first));
+
+while (first.IsAlive() && second.IsAlive() )
 {
-    private int Width { get; set; } = width;
-    private int Height { get; set; } = height;
-
-    public int GetArea()
+    first.Attack(second);   
+    Console.WriteLine($"{first.Name} hits {second.Name}, {second.Name} has {second.Health} health left");
+    if (second.IsAlive())
     {
-        return Width * Height;
+        second.Attack(first);   
+        Console.WriteLine($"{second.Name} hits {first.Name}, {first.Name} has {first.Health} health left");
     }
+}
+if (first.IsAlive())
+{
+    Console.WriteLine($"{first.Name} wins");
+}
+else
+{
+    Console.WriteLine($"{second.Name} wins");
+}
 
-    public int GetPerimeter()
+class Player(string name, int health, Weapon weapon)
+{
+    public string Name { get; } = name;
+    public int Health { get; private set; } = health;
+    
+    public Weapon Weapon{ get; private set; } = weapon;
+    
+    public bool IsAlive()
     {
-        return (2*(Width + Height));
+        return Health > 0;
     }
     
+    public void TakeDamage(int amount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
+
+        Health -= amount;
+
+        if (Health < 0)
+        {
+            Health = 0;
+        }
+    }
+
+    public bool Attack(Player target)
+    {
+        if(IsAlive())
+        {
+            target.TakeDamage(Weapon.Damage);
+            return true;
+        }
+
+        return false;
+    }
     
-    public bool IsSquare()
+    public void Equip(Weapon newWeapon)
     {
-        return Width == Height;
+        if (newWeapon == null)
+        {
+            throw new ArgumentNullException();
+        }
+        Weapon = newWeapon;
     }
+}
 
-    public void Scale(int factor)
-    {
-        Width *= factor;
-        Height *= factor;
-    }
-
-    public bool IsBiggerThan(Rectangle other)
-    {
-        return GetArea() > other.GetArea();
-    }
-
+class  Weapon(string name, int damage)
+{
+    public string Name { get; } = name;
+    public int Damage { get; } = damage;
 }
