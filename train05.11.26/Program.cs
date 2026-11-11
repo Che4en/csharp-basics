@@ -1,93 +1,101 @@
-﻿var sword = new Weapon("Sword", 30);
-var dagger = new Weapon("Dagger", 10);
+﻿var bread = new Product("Bread",50);
+bread.Restock(10);
 
-var first = new Player("anna", 100, sword);
-var second = new Player("boris", 100, dagger);
+var anna = new Customer("Anna");
+anna.AddMoney(200);
 
-first.Attack(second);
-Console.WriteLine(second.Health);   
+Console.WriteLine(anna.Buy(bread, 3));
+Console.WriteLine(anna.Balance);
+Console.WriteLine(bread.Stock);
 
-first.Equip(dagger);
-first.Attack(second);
-Console.WriteLine(second.Health);
+Console.WriteLine(anna.Buy(bread, 2));
+Console.WriteLine(anna.Balance);
+Console.WriteLine(bread.Stock);
 
-Console.WriteLine(first.IsAlive()); 
-first.TakeDamage(10);
-Console.WriteLine(first.Health);   
+var boris = new Customer("Boris");
+boris.AddMoney(5000);
+Console.WriteLine(boris.Buy(bread, 30));
+Console.WriteLine(boris.Balance);
+Console.WriteLine(bread.Stock);
 
-// first.Attack(second);
-// Console.WriteLine(second.Health);   
-// first.Attack(second);
-// Console.WriteLine(second.Health);   
-// Console.WriteLine(second.IsAlive());
-// Console.WriteLine(second.Attack(first));
+Console.WriteLine(boris.Buy(bread, 7));
+Console.WriteLine(bread.Stock);
+Console.WriteLine(boris.Balance);
 
-while (first.IsAlive() && second.IsAlive() )
+
+class Product(string name, decimal price)
 {
-    first.Attack(second);   
-    Console.WriteLine($"{first.Name} hits {second.Name}, {second.Name} has {second.Health} health left");
-    if (second.IsAlive())
+    public string Name { get; private set; } = name;
+    public decimal Price { get; private set; } = price;
+    public int Stock { get; private set; } = 0;
+
+    public bool TryTake(int count)
     {
-        second.Attack(first);   
-        Console.WriteLine($"{second.Name} hits {first.Name}, {first.Name} has {first.Health} health left");
-    }
-}
-if (first.IsAlive())
-{
-    Console.WriteLine($"{first.Name} wins");
-}
-else
-{
-    Console.WriteLine($"{second.Name} wins");
-}
-
-class Player(string name, int health, Weapon weapon)
-{
-    public string Name { get; } = name;
-    public int Health { get; private set; } = health;
-    
-    public Weapon Weapon{ get; private set; } = weapon;
-    
-    public bool IsAlive()
-    {
-        return Health > 0;
-    }
-    
-    public void TakeDamage(int amount)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(amount);
-
-        Health -= amount;
-
-        if (Health < 0)
+        if (count <= 0)
         {
-            Health = 0;
-        }
-    }
-
-    public bool Attack(Player target)
-    {
-        if(IsAlive())
-        {
-            target.TakeDamage(Weapon.Damage);
-            return true;
+            throw new ArgumentOutOfRangeException(nameof(count)); 
         }
 
-        return false;
-    }
-    
-    public void Equip(Weapon newWeapon)
-    {
-        if (newWeapon == null)
+        if(Stock < count)
         {
-            throw new ArgumentNullException();
+            return false;
         }
-        Weapon = newWeapon;
+        Stock -= count;
+        return true;
+    }
+
+    public void Restock(int count)
+    {
+        if (count<=0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(count));
+        }
+        Stock += count;
     }
 }
 
-class  Weapon(string name, int damage)
+class Customer
 {
-    public string Name { get; } = name;
-    public int Damage { get; } = damage;
+    public string Name { get; private set; }
+    public decimal Balance { get; private set; }
+
+    public Customer(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentNullException(nameof(name));
+        }
+        Name = name;
+    }
+    
+    public void AddMoney(decimal money)
+    {
+        if (money<=0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(money));
+        }
+        Balance += money;
+
+    }
+    
+    
+    public bool Buy(Product product, int count)
+    {
+        if (product == null)
+        {
+            throw new ArgumentNullException(nameof(product));
+        }
+        var result = product.Price * count;
+        if (result > Balance)
+        {
+            return false;
+        }
+        if (!product.TryTake(count))
+        {
+            return false;
+        }
+        Balance -= result;
+        return true;
+    }
+    
 }
