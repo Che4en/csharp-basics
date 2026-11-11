@@ -1,61 +1,46 @@
-﻿BankAccount gena = new BankAccount("Geo");
-BankAccount sena = new BankAccount("senna");
-gena.Deposit(50);
-sena.Deposit(100);
+﻿var first = new Rectangle(3,3);
+var second = new Rectangle(2,5);
 
-Console.WriteLine(gena.Transfer(sena, 30));   // True
-Console.WriteLine(gena.Balance);              // 20
-Console.WriteLine(sena.Balance);              // 130
-Console.WriteLine(gena.Transfer(sena, 100));  // False
-Console.WriteLine(gena.Balance);              // 20, не изменился
-Console.WriteLine(sena.Balance);              // 130, не изменился
+Console.WriteLine(first.GetArea());
+Console.WriteLine(second.GetArea());
+Console.WriteLine(first.GetPerimeter());
+Console.WriteLine(second.GetPerimeter());
+Console.WriteLine(first.IsSquare());
+Console.WriteLine(second.IsSquare());
+first.Scale(2);
+Console.WriteLine(first.GetArea());
+Console.WriteLine(first.IsBiggerThan(second));
 
-
-class BankAccount
+class Rectangle(int width, int height)
 {
-    public string Owner { get; private set; }
-    public decimal Balance { get; private set; }
+    private int Width { get; set; } = width;
+    private int Height { get; set; } = height;
 
-    public BankAccount(string owner)
+    public int GetArea()
     {
-        if (string.IsNullOrWhiteSpace(owner))
-        {
-            throw new  ArgumentException(nameof(owner));
-        }
-        Owner = owner;
+        return Width * Height;
     }
 
-    public void Deposit(decimal amount)
+    public int GetPerimeter()
     {
-        if (amount <= 0)
-        {
-            throw new ArgumentException(nameof(amount));
-        }
-        Balance += amount;
+        return (2*(Width + Height));
+    }
+    
+    
+    public bool IsSquare()
+    {
+        return Width == Height;
     }
 
-    public bool Withdraw(decimal amount)
+    public void Scale(int factor)
     {
-        if (amount <= 0)
-        {
-            throw new ArgumentException(nameof(amount));
-        }
-        else if (Balance < amount)
-        {
-            return false;
-        }
-        Balance -= amount;
-        return true;
+        Width *= factor;
+        Height *= factor;
     }
 
-    public bool Transfer(BankAccount target, decimal amount)
+    public bool IsBiggerThan(Rectangle other)
     {
-        var success = Withdraw(amount);
-        if (!success)
-        {
-            return false;
-        }
-        target.Deposit(amount);
-        return true;
+        return GetArea() > other.GetArea();
     }
+
 }
