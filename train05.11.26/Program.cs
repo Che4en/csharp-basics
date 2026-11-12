@@ -1,101 +1,68 @@
-﻿var bread = new Product("Bread",50);
-bread.Restock(10);
-
-var anna = new Customer("Anna");
-anna.AddMoney(200);
-
-Console.WriteLine(anna.Buy(bread, 3));
-Console.WriteLine(anna.Balance);
-Console.WriteLine(bread.Stock);
-
-Console.WriteLine(anna.Buy(bread, 2));
-Console.WriteLine(anna.Balance);
-Console.WriteLine(bread.Stock);
-
-var boris = new Customer("Boris");
-boris.AddMoney(5000);
-Console.WriteLine(boris.Buy(bread, 30));
-Console.WriteLine(boris.Balance);
-Console.WriteLine(bread.Stock);
-
-Console.WriteLine(boris.Buy(bread, 7));
-Console.WriteLine(bread.Stock);
-Console.WriteLine(boris.Balance);
-
-
-class Product(string name, decimal price)
+﻿int[] a = {1,3,4,5,6,6,2,3,0 };
+var evens = GetEvens(a);
+Console.WriteLine(string.Join(" ", evens));
+List<int> GetEvens(int[] numbers)
 {
-    public string Name { get; private set; } = name;
-    public decimal Price { get; private set; } = price;
-    public int Stock { get; private set; } = 0;
+    var result = new List<int>();
 
-    public bool TryTake(int count)
+    foreach (var number in numbers )
     {
-        if (count <= 0)
+        if (number%2==0)
         {
-            throw new ArgumentOutOfRangeException(nameof(count)); 
+            result.Add(number);
         }
-
-        if(Stock < count)
-        {
-            return false;
-        }
-        Stock -= count;
-        return true;
     }
-
-    public void Restock(int count)
-    {
-        if (count<=0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
-        Stock += count;
-    }
+    return result;
+    
 }
 
-class Customer
+int Sumlist(List<int> list)
 {
-    public string Name { get; private set; }
-    public decimal Balance { get; private set; }
+    var sumlist = 0;
+    foreach (var value in list)
+    {
+        sumlist += value;
+    }
 
-    public Customer(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
-        Name = name;
-    }
-    
-    public void AddMoney(decimal money)
-    {
-        if (money<=0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(money));
-        }
-        Balance += money;
+    return sumlist;
+}
 
-    }
-    
-    
-    public bool Buy(Product product, int count)
+List<int> list = [ 1, 2, 3, 4, 5, 6, 7 ];
+var sumResult = Sumlist(list);
+Console.WriteLine(sumResult);
+
+List<string> FilterByLetter(List<string> words, char letter)
+{
+    var result = new List<string>();
+    for (int i = 0; i < words.Count; i++)
     {
-        if (product == null)
+        if (words[i].Trim().ToLower().StartsWith(char.ToLower(letter)))
         {
-            throw new ArgumentNullException(nameof(product));
+            result.Add(words[i]);
         }
-        var result = product.Price * count;
-        if (result > Balance)
-        {
-            return false;
-        }
-        if (!product.TryTake(count))
-        {
-            return false;
-        }
-        Balance -= result;
-        return true;
     }
-    
+    return result;
+}
+
+var fruits = new List<string> { "apple", "banana", "avocado" };
+var fruit = FilterByLetter(fruits, 'a');
+Console.WriteLine(string.Join(", ", fruit));
+
+
+var minusNumbres = new List<int> {1,4,65,7,8,-1,-3,-1};
+var minusResult = RemoveNegatives(minusNumbres);
+Console.WriteLine(string.Join(" ", minusResult));
+List<int> RemoveNegatives(List<int> values)
+{
+    var result = new List<int>();
+
+    foreach (var value in values)
+    {
+        if (value>=0)
+        {
+            result.Add(value);
+        }
+    }
+    return result;
+
 }
