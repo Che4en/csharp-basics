@@ -1,68 +1,127 @@
-﻿int[] a = {1,3,4,5,6,6,2,3,0 };
-var evens = GetEvens(a);
-Console.WriteLine(string.Join(" ", evens));
-List<int> GetEvens(int[] numbers)
-{
-    var result = new List<int>();
+﻿using System.Security.AccessControl;
 
-    foreach (var number in numbers )
+int[] numbers = [1, 3, 5, 6, 87];
+int[] numbers2 = [1];
+int[] numbers3 = [];
+int[] numbers4 = [124, 14];
+
+Console.WriteLine(IsSorted(numbers));
+Console.WriteLine(IsSorted(numbers2));
+Console.WriteLine(IsSorted(numbers3));
+Console.WriteLine(IsSorted(numbers4));
+
+bool IsSorted(int[] a)
+{
+    for (var i = 0; i < a.Length - 1; i++)
     {
-        if (number%2==0)
+        if (a[i]>a[i+1])
         {
-            result.Add(number);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+var s = "banana";
+Console.WriteLine(RemoveChar(s,'a'));
+
+string RemoveChar(string s, char target)
+{
+    var result = "";
+    foreach (var letter in s)
+    {
+        if (letter!=target)
+        {
+            result += letter;
         }
     }
     return result;
+}
+
+var gena = new TodoItem("Exam");
+Console.WriteLine(gena.IsDone);
+gena.Complete();
+Console.WriteLine(gena.IsDone);
+
+
+var list = new TodoList();
+var a = new TodoItem("Exam");
+var b = new TodoItem("Gym");
+list.Add(a);
+list.Add(b);
+
+a.Complete();
+Console.WriteLine(list.CountDone());
+
+var found = list.FindByTitle("Gym");
+Console.WriteLine(found?.Title);
+Console.WriteLine(list.FindByTitle("Nothing") == null);
+
+
+
+class  TodoItem
+{
+    public string Title { get; set; }
+    public bool IsDone { get; private set; }
     
-}
-
-int Sumlist(List<int> list)
-{
-    var sumlist = 0;
-    foreach (var value in list)
+    public TodoItem(string title)
     {
-        sumlist += value;
-    }
-
-    return sumlist;
-}
-
-List<int> list = [ 1, 2, 3, 4, 5, 6, 7 ];
-var sumResult = Sumlist(list);
-Console.WriteLine(sumResult);
-
-List<string> FilterByLetter(List<string> words, char letter)
-{
-    var result = new List<string>();
-    for (int i = 0; i < words.Count; i++)
-    {
-        if (words[i].Trim().ToLower().StartsWith(char.ToLower(letter)))
+        if (string.IsNullOrWhiteSpace(title))
         {
-            result.Add(words[i]);
+            throw new ArgumentException(nameof(title));
         }
+        Title = title;
     }
-    return result;
-}
-
-var fruits = new List<string> { "apple", "banana", "avocado" };
-var fruit = FilterByLetter(fruits, 'a');
-Console.WriteLine(string.Join(", ", fruit));
-
-
-var minusNumbres = new List<int> {1,4,65,7,8,-1,-3,-1};
-var minusResult = RemoveNegatives(minusNumbres);
-Console.WriteLine(string.Join(" ", minusResult));
-List<int> RemoveNegatives(List<int> values)
-{
-    var result = new List<int>();
-
-    foreach (var value in values)
+    
+    public void Complete()
     {
-        if (value>=0)
+        if(IsDone)
         {
-            result.Add(value);
+            throw new InvalidOperationException();
         }
+        IsDone = true;
     }
-    return result;
+}   
 
+
+class TodoList
+{
+
+    private List<TodoItem> _item = new List<TodoItem>();
+
+    public void Add(TodoItem item)
+    {
+        if(item==null){
+            throw new ArgumentNullException(nameof(item));
+        }
+        _item.Add(item);
+    }
+
+    public int CountDone()
+    {
+        var count = 0;
+        foreach (var item in _item)
+        {
+            if (item.IsDone)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public TodoItem? FindByTitle(string title)
+    {
+        foreach (var item in  _item)
+        {
+            if (item.Title == title)
+            {
+                return item;
+            }
+        }
+
+        return null;
+    }
 }
